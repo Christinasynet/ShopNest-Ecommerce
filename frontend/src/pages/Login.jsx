@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import api from "../api";
+import api from "../services/api";
 import "../styles/auth.css";
 
 const Login = () => {
@@ -31,7 +31,10 @@ const Login = () => {
       console.error("LOGIN ERROR:", error);
 
       if (error.response) {
-        alert(error.response.data.message || "Invalid email or password");
+        alert(
+          error.response.data.message ||
+            "Invalid email or password"
+        );
       } else {
         alert("Unable to connect to the backend.");
       }
@@ -59,11 +62,15 @@ const Login = () => {
           required
         />
 
-        <button type="submit">Login</button>
+        <button type="submit">
+          Login
+        </button>
 
         <p>
           Don't have an account?{" "}
-          <Link to="/register">Register Here</Link>
+          <Link to="/register">
+            Register Here
+          </Link>
         </p>
       </form>
     </div>
