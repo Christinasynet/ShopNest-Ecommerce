@@ -8,15 +8,40 @@ connectDB();
 
 const app = express();
 
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://shopnest-ecommerce-beta.vercel.app",
-    "https://shopnest-ecommerce-9ngyacvca-christinasynet58-9907s-projects.vercel.app"
-  ],
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+
+  // Vercel production
+  "https://shopnest-ecommerce-beta.vercel.app",
+
+  // Previous Vercel deployment
+  "https://shopnest-ecommerce-9ngyacvca-christinasynet58-9907s-projects.vercel.app",
+
+  // Current Vercel deployment
+  "https://shopnest-ecommerce-cgrqirvca-christinasynet58-9907s-projects.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests without an origin
+      // such as Postman or direct API requests
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.log("CORS blocked origin:", origin);
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,11 +52,30 @@ app.get("/", (req, res) => {
 
 console.log("Auth routes loaded");
 
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/products", require("./routes/productRoutes"));
-app.use("/api/orders", require("./routes/orderRoutes.js"));
-app.use("/api/payments", require("./routes/paymentRoutes.js"));
-app.use("/api/analytics", require("./routes/analyticsRoutes"));
+app.use(
+  "/api/auth",
+  require("./routes/authRoutes")
+);
+
+app.use(
+  "/api/products",
+  require("./routes/productRoutes")
+);
+
+app.use(
+  "/api/orders",
+  require("./routes/orderRoutes.js")
+);
+
+app.use(
+  "/api/payments",
+  require("./routes/paymentRoutes.js")
+);
+
+app.use(
+  "/api/analytics",
+  require("./routes/analyticsRoutes")
+);
 
 const PORT = process.env.PORT || 8000;
 
