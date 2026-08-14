@@ -9,18 +9,20 @@ const Products = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get("/products");
+
+        console.log("PRODUCTS:", response.data);
+
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
     fetchProducts();
   }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await api.get("/products");
-      const data = response.data;
-      setProducts(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <>

@@ -53,7 +53,7 @@ const Navbar = () => {
 
         <Link to="/" className="logo">
           <img
-            src="/free.png"
+            src="/Free.png"
             alt="ShopNest Logo"
             className="logo-img"
           />
@@ -151,7 +151,6 @@ const Navbar = () => {
                 </Link>
 
                 {user.role === "admin" && (
-
                   <Link
                     to="/add-product"
                     onClick={() =>
@@ -160,7 +159,6 @@ const Navbar = () => {
                   >
                     Add Product
                   </Link>
-
                 )}
 
                 <button
