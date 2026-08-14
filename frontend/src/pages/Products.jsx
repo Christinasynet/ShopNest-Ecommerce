@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
+import api from "../api";
 import "../styles/Products.css";
 
 const Products = () => {
@@ -13,8 +14,8 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/products");
-      const data = await res.json();
+      const response = await api.get("/products");
+      const data = response.data;
       setProducts(data);
     } catch (err) {
       console.log(err);
@@ -26,7 +27,6 @@ const Products = () => {
       <Navbar />
 
       <div className="products-page">
-
         <h1 className="products-title">
           Our Products
         </h1>
@@ -39,7 +39,6 @@ const Products = () => {
             />
           ))}
         </div>
-
       </div>
 
       <Footer />
