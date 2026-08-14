@@ -53,7 +53,7 @@ const Navbar = () => {
 
         <Link to="/" className="logo">
           <img
-            src="/Free.png"
+            src={`${process.env.PUBLIC_URL}/Free.png`}
             alt="ShopNest Logo"
             className="logo-img"
           />
@@ -117,7 +117,6 @@ const Navbar = () => {
 
         {/* User */}
         {user ? (
-
           <div
             className="profile-dropdown"
             ref={dropdownRef}
@@ -126,26 +125,19 @@ const Navbar = () => {
             <button
               type="button"
               className="profile-btn"
-              onClick={() =>
-                setShowDropdown(!showDropdown)
-              }
+              onClick={() => setShowDropdown(!showDropdown)}
             >
               <FaUser />
 
-              <span>
-                {user.username}
-              </span>
+              <span>{user.username}</span>
             </button>
 
             {showDropdown && (
-
               <div className="dropdown-content">
 
                 <Link
                   to="/myorders"
-                  onClick={() =>
-                    setShowDropdown(false)
-                  }
+                  onClick={() => setShowDropdown(false)}
                 >
                   My Orders
                 </Link>
@@ -153,9 +145,7 @@ const Navbar = () => {
                 {user.role === "admin" && (
                   <Link
                     to="/add-product"
-                    onClick={() =>
-                      setShowDropdown(false)
-                    }
+                    onClick={() => setShowDropdown(false)}
                   >
                     Add Product
                   </Link>
@@ -173,13 +163,10 @@ const Navbar = () => {
                 </button>
 
               </div>
-
             )}
 
           </div>
-
         ) : (
-
           <Link
             to="/login"
             className="login-btn"
@@ -187,7 +174,6 @@ const Navbar = () => {
             <FaUser />
             Login
           </Link>
-
         )}
 
       </div>
