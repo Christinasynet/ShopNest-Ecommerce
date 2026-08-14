@@ -47,14 +47,22 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      {/* Left */}
+
+      {/* Left Section */}
       <div className="nav-left">
+
         <Link to="/" className="logo">
-          <img src="/free.png" alt="ShopNest" className="logo-img" />
+          <img
+            src="/free.png"
+            alt="ShopNest Logo"
+            className="logo-img"
+          />
+
           <span>ShopNest</span>
         </Link>
 
         <ul className="nav-links">
+
           <li>
             <Link to="/">
               <FaHome />
@@ -77,53 +85,82 @@ const Navbar = () => {
               </Link>
             </li>
           )}
+
         </ul>
       </div>
 
       {/* Search */}
       <div className="search-box">
         <FaSearch className="search-icon" />
-        <input type="text" placeholder="Search products..." />
+
+        <input
+          type="text"
+          placeholder="Search products..."
+        />
       </div>
 
-      {/* Right */}
+      {/* Right Section */}
       <div className="nav-right">
+
+        {/* Cart */}
         <Link to="/cart" className="cart-link">
           <FaShoppingCart />
+
           <span>Cart</span>
 
           {cartItems.length > 0 && (
-            <span className="cart-count">{cartItems.length}</span>
+            <span className="cart-count">
+              {cartItems.length}
+            </span>
           )}
         </Link>
 
+        {/* User */}
         {user ? (
-          <div className="profile-dropdown" ref={dropdownRef}>
+
+          <div
+            className="profile-dropdown"
+            ref={dropdownRef}
+          >
+
             <button
               type="button"
               className="profile-btn"
-              onClick={() => setShowDropdown(!showDropdown)}
+              onClick={() =>
+                setShowDropdown(!showDropdown)
+              }
             >
               <FaUser />
-              <span>{user.username}</span>
+
+              <span>
+                {user.username}
+              </span>
             </button>
 
             {showDropdown && (
+
               <div className="dropdown-content">
+
                 <Link
                   to="/myorders"
-                  onClick={() => setShowDropdown(false)}
+                  onClick={() =>
+                    setShowDropdown(false)
+                  }
                 >
                   My Orders
                 </Link>
 
                 {user.role === "admin" && (
+
                   <Link
                     to="/add-product"
-                    onClick={() => setShowDropdown(false)}
+                    onClick={() =>
+                      setShowDropdown(false)
+                    }
                   >
                     Add Product
                   </Link>
+
                 )}
 
                 <button
@@ -136,16 +173,27 @@ const Navbar = () => {
                   <FaSignOutAlt />
                   Logout
                 </button>
+
               </div>
+
             )}
+
           </div>
+
         ) : (
-          <Link to="/login" className="login-btn">
+
+          <Link
+            to="/login"
+            className="login-btn"
+          >
             <FaUser />
             Login
           </Link>
+
         )}
+
       </div>
+
     </nav>
   );
 };
