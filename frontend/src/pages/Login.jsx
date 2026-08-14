@@ -1,7 +1,7 @@
-// TEST
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import api from "../api";
 import "../styles/auth.css";
 
 const Login = () => {
@@ -15,23 +15,12 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const response = await api.post("/auth/login", {
+        email,
+        password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.message || "Invalid email or password");
-        return;
-      }
+      const data = response.data;
 
       login(data);
 
@@ -40,7 +29,12 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error("LOGIN ERROR:", error);
-      alert("Unable to connect to the backend.");
+
+      if (error.response) {
+        alert(error.response.data.message || "Invalid email or password");
+      } else {
+        alert("Unable to connect to the backend.");
+      }
     }
   };
 
