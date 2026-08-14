@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
+import api from "../api";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -11,8 +12,8 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/products");
-        const data = await res.json();
+        const response = await api.get("/products");
+        const data = response.data;
 
         setProducts(data.slice(0, 4));
       } catch (error) {
