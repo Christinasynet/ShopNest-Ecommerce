@@ -1,7 +1,6 @@
 const user = require("../model/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const sendEmail = require("../utils/sendEmail");
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -17,7 +16,6 @@ const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // Normalize email
     const normalizedEmail = email?.trim().toLowerCase();
 
     console.log("EMAIL RECEIVED:", email);
@@ -28,7 +26,10 @@ const registerUser = async (req, res) => {
       email: normalizedEmail,
     });
 
-    console.log("EXISTING USER:", existingUser);
+    console.log(
+      "EXISTING USER:",
+      existingUser ? existingUser.email : "None"
+    );
 
     if (existingUser) {
       return res.status(400).json({
@@ -49,28 +50,20 @@ const registerUser = async (req, res) => {
 
     console.log("USER CREATED:", User._id);
 
-    // Send registration email
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    await sendEmail(
-      normalizedEmail,
-      "shopNEST Registration OTP",
-      `Welcome to shopNEST. Your OTP is ${otp}`
-    );
-
-    // Send response
-    res.status(201).json({
+    // Send response immediately
+    return res.status(201).json({
       _id: User._id,
       username: User.username,
       email: User.email,
       role: User.role,
       token: generateToken(User._id),
     });
+
   } catch (error) {
     console.error("REGISTER ERROR:");
     console.error(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message,
     });
   }
@@ -86,13 +79,14 @@ const loginUser = async (req, res) => {
   try {
     const normalizedEmail = email?.trim().toLowerCase();
 
-    console.log("LOGIN EMAIL:", normalizedEmail);
-
     const User = await user.findOne({
       email: normalizedEmail,
     });
 
-    console.log("USER FOUND:", User);
+    console.log(
+      "USER FOUND:",
+      User ? User.email : "None"
+    );
 
     if (!User) {
       return res.status(400).json({
@@ -110,18 +104,19 @@ const loginUser = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       _id: User._id,
       username: User.username,
       email: User.email,
       role: User.role,
       token: generateToken(User._id),
     });
+
   } catch (error) {
     console.error("LOGIN ERROR:");
     console.error(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message,
     });
   }
@@ -132,11 +127,12 @@ const getUsers = async (req, res) => {
   try {
     const users = await user.find({}).select("-password");
 
-    res.json(users);
-  } catch (error) {
-    console.error(error);
+    return res.json(users);
 
-    res.status(500).json({
+  } catch (error) {
+    console.error("GET USERS ERROR:", error);
+
+    return res.status(500).json({
       message: error.message,
     });
   }
