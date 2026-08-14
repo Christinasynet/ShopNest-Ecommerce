@@ -17,11 +17,13 @@ const ProductCard = ({ product, onDelete }) => {
 
   const [deleting, setDeleting] = useState(false);
 
+  // ================= ADD TO CART =================
   const addToCartHandler = () => {
     dispatch(addToCart(product));
     alert(`${product.name} added to cart!`);
   };
 
+  // ================= DELETE PRODUCT =================
   const deleteProductHandler = async () => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete "${product.name}"?`
@@ -31,10 +33,19 @@ const ProductCard = ({ product, onDelete }) => {
       return;
     }
 
+    if (!user?.token) {
+      alert("You are not authorized. Please login again.");
+      return;
+    }
+
     try {
       setDeleting(true);
 
-      await api.delete(`/products/${product._id}`);
+      await api.delete(`/products/${product._id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
 
       alert("Product deleted successfully!");
 
@@ -44,10 +55,14 @@ const ProductCard = ({ product, onDelete }) => {
     } catch (error) {
       console.error("DELETE PRODUCT ERROR:", error);
 
-      alert(
-        error.response?.data?.message ||
-          "Failed to delete product"
-      );
+      if (error.response) {
+        alert(
+          error.response.data.message ||
+            "Failed to delete product"
+        );
+      } else {
+        alert("Unable to connect to the backend.");
+      }
     } finally {
       setDeleting(false);
     }
@@ -56,6 +71,7 @@ const ProductCard = ({ product, onDelete }) => {
   return (
     <div className="product-card">
 
+      {/* ================= PRODUCT IMAGE ================= */}
       <div className="product-image-container">
         <img
           src={
@@ -67,8 +83,10 @@ const ProductCard = ({ product, onDelete }) => {
         />
       </div>
 
+      {/* ================= PRODUCT INFORMATION ================= */}
       <div className="product-info">
 
+        {/* Rating */}
         <div className="rating">
           <FaStar />
           <FaStar />
@@ -78,26 +96,32 @@ const ProductCard = ({ product, onDelete }) => {
           <span>4.8</span>
         </div>
 
+        {/* Product Name */}
         <h3 className="product-name">
           {product.name}
         </h3>
 
+        {/* Category */}
         <span className="category">
           {product.category}
         </span>
 
+        {/* Price */}
         <p className="product-price">
           ₹{product.price}
         </p>
 
+        {/* Description */}
         <p className="product-description">
-          {product.description.length > 80
+          {product.description?.length > 80
             ? product.description.substring(0, 80) + "..."
             : product.description}
         </p>
 
+        {/* ================= BUTTONS ================= */}
         <div className="product-buttons">
 
+          {/* Add To Cart */}
           <button
             className="cart-btn"
             onClick={addToCartHandler}
@@ -106,6 +130,7 @@ const ProductCard = ({ product, onDelete }) => {
             Add to Cart
           </button>
 
+          {/* View Details */}
           <Link
             to={`/product/${product._id}`}
             className="details-btn"
@@ -113,6 +138,7 @@ const ProductCard = ({ product, onDelete }) => {
             View Details
           </Link>
 
+          {/* Delete - Admin Only */}
           {user?.role === "admin" && (
             <button
               className="delete-btn"
@@ -120,7 +146,10 @@ const ProductCard = ({ product, onDelete }) => {
               disabled={deleting}
             >
               <FaTrash />
-              {deleting ? "Deleting..." : "Delete"}
+
+              {deleting
+                ? "Deleting..."
+                : "Delete"}
             </button>
           )}
 
