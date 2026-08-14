@@ -12,12 +12,23 @@ const generateToken = (id) => {
 // ================= REGISTER =================
 const registerUser = async (req, res) => {
   console.log("REGISTER API HIT");
-  console.log(req.body);
+  console.log("REQUEST BODY:", req.body);
 
   const { username, email, password } = req.body;
 
   try {
-    const existingUser = await user.findOne({ email });
+    // Normalize email
+    const normalizedEmail = email?.trim().toLowerCase();
+
+    console.log("EMAIL RECEIVED:", email);
+    console.log("NORMALIZED EMAIL:", normalizedEmail);
+
+    // Check if user already exists
+    const existingUser = await user.findOne({
+      email: normalizedEmail,
+    });
+
+    console.log("EXISTING USER:", existingUser);
 
     if (existingUser) {
       return res.status(400).json({
@@ -25,23 +36,29 @@ const registerUser = async (req, res) => {
       });
     }
 
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create user
     const User = await user.create({
       username,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
     });
 
-    // Comment these 2 lines temporarily if email causes problems
+    console.log("USER CREATED:", User._id);
+
+    // Send registration email
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
     await sendEmail(
-      email,
+      normalizedEmail,
       "shopNEST Registration OTP",
       `Welcome to shopNEST. Your OTP is ${otp}`
     );
 
+    // Send response
     res.status(201).json({
       _id: User._id,
       username: User.username,
@@ -62,12 +79,18 @@ const registerUser = async (req, res) => {
 // ================= LOGIN =================
 const loginUser = async (req, res) => {
   console.log("LOGIN API HIT");
-  console.log(req.body);
+  console.log("REQUEST BODY:", req.body);
 
   const { email, password } = req.body;
 
   try {
-    const User = await user.findOne({ email });
+    const normalizedEmail = email?.trim().toLowerCase();
+
+    console.log("LOGIN EMAIL:", normalizedEmail);
+
+    const User = await user.findOne({
+      email: normalizedEmail,
+    });
 
     console.log("USER FOUND:", User);
 
