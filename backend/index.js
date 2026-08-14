@@ -13,24 +13,29 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "http://127.0.0.1:3000",
-
   "https://shopnest-ecommerce-beta.vercel.app",
-
-  "https://shopnest-ecommerce-9ngyacvca-christinasynet58-9907s-projects.vercel.app",
-
-  "https://shopnest-ecommerce-cgrqirvca-christinasynet58-9907s-projects.vercel.app",
-
-  "https://shopnest-ecommerce-8cbae1nbo-christinasynet58-9907s-projects.vercel.app",
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
+      // Allow requests with no origin
       if (!origin) {
         return callback(null, true);
       }
 
+      // Allow fixed origins
       if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Allow all Vercel preview deployments
+      const isVercelPreview =
+        /^https:\/\/shopnest-ecommerce-[a-z0-9]+-christinasynet58-9907s-projects\.vercel\.app$/.test(
+          origin
+        );
+
+      if (isVercelPreview) {
         return callback(null, true);
       }
 
@@ -38,6 +43,7 @@ app.use(
 
       return callback(new Error("Not allowed by CORS"));
     },
+
     credentials: true,
   })
 );
