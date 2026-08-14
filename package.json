@@ -1,0 +1,27 @@
+{
+  "name": "shopnest-full-stack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "shopNEST Ecom (root wrapper)",
+  "keywords": [
+    "christina",
+    "microservice"
+  ],
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev:server": "cd backend && npm run dev",
+    "dev:client": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\""
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.12.0",
+    "aos": "^2.3.4",
+    "concurrently": "^10.0.3",
+    "react-icons": "^5.7.0",
+    "react-razorpay": "^3.0.1",
+    "react-redux": "^9.3.0"
+  }
+}

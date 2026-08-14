@@ -1,0 +1,65 @@
+.success-container{
+    min-height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#f5f5f5;
+}
+
+.success-card{
+    width:550px;
+    background:white;
+    padding:40px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+.success-icon{
+    font-size:80px;
+    margin-bottom:20px;
+}
+
+.success-card h1{
+    color:#28a745;
+    margin-bottom:20px;
+}
+
+.success-card p{
+    color:#555;
+    margin:10px 0;
+    font-size:18px;
+}
+
+.success-buttons{
+    margin-top:30px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+}
+
+.continue-btn,
+.orders-btn{
+    padding:12px 25px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    color:white;
+}
+
+.continue-btn{
+    background:#ff7300;
+}
+
+.orders-btn{
+    background:#007bff;
+}
+
+.continue-btn:hover{
+    background:#e66600;
+}
+
+.orders-btn:hover{
+    background:#0069d9;
+}
