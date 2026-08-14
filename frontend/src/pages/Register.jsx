@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import api from "../api";
 import "../styles/auth.css";
 
 const Register = () => {
@@ -15,32 +16,27 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:8000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
+      const response = await api.post("/auth/register", {
+        username,
+        email,
+        password,
       });
 
-      const data = await res.json();
+      const data = response.data;
 
-      if (res.ok) {
-        alert("Registration Successful!");
+      alert("Registration Successful!");
 
-        login(data);
+      login(data);
 
-        navigate("/");
-      } else {
-        alert(data.message);
-      }
+      navigate("/");
     } catch (error) {
       console.error(error);
-      alert("Server Error");
+
+      if (error.response) {
+        alert(error.response.data.message || "Registration failed");
+      } else {
+        alert("Server Error");
+      }
     }
   };
 
